@@ -2,9 +2,9 @@ from config import db
 
 class Contact(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.string(50), unique=False, nullable=False)
-    last_name = db.Column(db.string(50), unique=False, nullable=False)
-    email = db.Column(db.string(150), unique=True, nullable=False)
+    first_name = db.Column(db.String(50), unique=False, nullable=False)
+    last_name = db.Column(db.String(50), unique=False, nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
 
     def to_json(self):
         return {
