@@ -1,33 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
+import ContactList from './ContactList';
+import ContactForm from './ContactForm';
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [contacts, setContacts] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // fetchin contacts list
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  const fetchContacts = async () => {
+    const response = await fetch('http://127.0.0.1:5000/contacts');
+    const data = await response.json();
+    setContacts(data.contacts);
+    console.log(data.contacts);
+  };
+
+  const closeModal = () => setIsModalOpen(false);
+  const openCreateModal = () => {
+    if (!isModalOpen) setIsModalOpen(true);
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <ContactList contacts={contacts}/>
+    <button className='btn btn-primary custom-btn' onClick={openCreateModal}>Create new Contact</button>
+    { isModalOpen && (
+      
+      <div className="modal bg-dark text-light mt-4 custom-modal" tabIndex="-1">
+      <div className='modal-content bg-dark text-light'>
+        <span className="btn-close btn-close-white" onClick={closeModal}></span>
+        <ContactForm/>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    </div>
+    )}
     </>
   )
 }

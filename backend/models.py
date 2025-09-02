@@ -9,7 +9,7 @@ class Contact(db.Model):
     def to_json(self):
         return {
             'id': self.id,
-            'lastName': self.first_name,
+            'firstName': self.first_name,
             'lastName': self.last_name,
             'email': self.email,
         }
