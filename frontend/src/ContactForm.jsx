@@ -1,9 +1,12 @@
 import { useState } from "react";
 
-const ContactForm = ({}) => {
-    const [firstName, setFirstName] = useState("");
-    const [lastName, setLastName] = useState("");
-    const [email, setEmail] = useState("");
+const ContactForm = ({ existingContact = {}, updateCallback }) => {
+    const [firstName, setFirstName] = useState(existingContact.firstName || "");
+    const [lastName, setLastName] = useState(existingContact.lastName || "");
+    const [email, setEmail] = useState(existingContact.email || "");
+
+    const updating = Object.entries(existingContact).length !== 0;
+
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -14,9 +17,9 @@ const ContactForm = ({}) => {
             lastName,
             email,
         };
-        const url = "http://127.0.0.1:5000/create_contact";
+        const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact");
         const options = {
-            method: "POST",
+            method: updating ? "PATCH" : "POST",
             headers: {
                 'Content-Type': "application/json"
             },
@@ -29,12 +32,12 @@ const ContactForm = ({}) => {
             const data = await response.json()
             alert(data.message);
         } else {
-            
+            updateCallback();
         };
     };
 
     return(
-        <form className="container mt-4" onSubmit={onSubmit}>
+        <form className="container m-3" onSubmit={onSubmit}>
             <div className="form-group bg-dark text-light">
                 <label htmlFor="firstName" className="form-label text-light">First Name:</label>
                 <input type="text"
@@ -59,7 +62,7 @@ const ContactForm = ({}) => {
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)}/>
             </div>
-            <button type="submit" className="btn btn-primary mt-3">Create Contact</button>
+            <button type="submit" className="btn btn-success mt-3">{updating ? "Update" : "Create"}</button>
         </form>
     )
 }

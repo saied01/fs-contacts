@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
 import ContactList from './ContactList';
-import ContactForm from './ContactForm';
+import ContactModal from './Modal'
 import './App.css'
 
 function App() {
   const [contacts, setContacts] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentContact, setCurrentContact] = useState({});
 
-  // fetchin contacts list
+  // fetching contacts list
   useEffect(() => {
     fetchContacts();
   }, []);
@@ -19,24 +20,34 @@ function App() {
     console.log(data.contacts);
   };
 
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    if (isModalOpen) setIsModalOpen(false);
+  };
   const openCreateModal = () => {
-    if (!isModalOpen) setIsModalOpen(true);
+    setCurrentContact({});
+      if (!isModalOpen) setIsModalOpen(true);
+  };
+  const openEditModal = (contact) => {
+    if (isModalOpen) return;
+    setCurrentContact(contact);
+    setIsModalOpen(true);
+  };
+
+  const onUpdate = () => {
+    closeModal();
+    fetchContacts();
   };
 
   return (
     <>
-    <ContactList contacts={contacts}/>
-    <button className='btn btn-primary custom-btn' onClick={openCreateModal}>Create new Contact</button>
-    { isModalOpen && (
-      
-      <div className="modal bg-dark text-light mt-4 custom-modal" tabIndex="-1">
-      <div className='modal-content bg-dark text-light'>
-        <span className="btn-close btn-close-white" onClick={closeModal}></span>
-        <ContactForm/>
-      </div>
-    </div>
-    )}
+    <ContactList contacts={contacts} updateContact={openEditModal} updateCallback={onUpdate}/>
+    <ContactModal
+        isModalOpen={isModalOpen}
+        closeModal={closeModal}
+        openCreateModal={openCreateModal}
+        currentContact={currentContact}
+        onUpdate={onUpdate}
+      />
     </>
   )
 }
