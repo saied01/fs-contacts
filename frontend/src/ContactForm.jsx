@@ -17,8 +17,9 @@ const ContactForm = ({ existingContact = {}, updateCallback }) => {
             lastName,
             email,
         };
-        const url = "http://127.0.0.1:5000/" + (updating ? `update_contact/${existingContact.id}` : "create_contact");
+        const url = "http://127.0.0.1:5000/api/contacts/" + (updating ? `update_contact/${existingContact.id}` : "create_contact");
         const options = {
+            credentials: 'include',
             method: updating ? "PATCH" : "POST",
             headers: {
                 'Content-Type': "application/json"
