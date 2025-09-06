@@ -1,7 +1,7 @@
 from flask import request, jsonify, Blueprint
 from . import db
 from .models import Contact
-from flask_login import login_required
+from flask_login import login_required, current_user
 
 # CRUD (Create Rread Update Delete) <- what we are building, so we need an operation for each
 
@@ -43,7 +43,7 @@ def create_contact():
 
 
 #update
-@contacts.route('/update_contact/<int:user_id>', methods=['PATCH'])
+@contacts.route('/update_contact/<int:contact_id>', methods=['PATCH'])
 @login_required
 def update_contact(contact_id):
     contact = Contact.query.filter_by(id=contact_id, user_id=current_user.id).first()
@@ -62,7 +62,7 @@ def update_contact(contact_id):
 
 
 #delete
-@contacts.route('/delete_contact/<int:user_id>', methods=['DELETE'])
+@contacts.route('/delete_contact/<int:contact_id>', methods=['DELETE'])
 @login_required
 def delete_contact(contact_id):
     contact = Contact.query.filter_by(id=contact_id, user_id=current_user.id).first()

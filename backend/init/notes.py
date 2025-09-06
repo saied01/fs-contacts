@@ -9,8 +9,9 @@ notes = Blueprint('notes', __name__)
 @notes.route("/", methods=["GET"])
 @login_required
 def get_notes():
-    notes = Note.query.filter_by(user_id=current_user.id).all()
-    return jsonify({'notes': [note.to_json() for note in notes]}), 200
+    user_notes = Note.query.filter_by(user_id=current_user.id).all()
+    return jsonify({'notes': [note.to_json() for note in user_notes]}), 200
+
 
 # Crear una nota nueva
 @notes.route("/", methods=["POST"])
@@ -25,6 +26,7 @@ def create_note():
     db.session.add(new_note)
     db.session.commit()
     return jsonify({'success': True, 'note': new_note.to_json()}), 201
+
 
 # Borrar una nota
 @notes.route("/<int:id>", methods=["DELETE"])
