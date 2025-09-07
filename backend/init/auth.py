@@ -34,7 +34,7 @@ def logout():
 def sign_up():
     data = request.json
     email = data.get('email')
-    password1 = data.get('password1')
+    password = data.get('password')
     password2 = data.get('password2')
     first_name = data.get('first_name')
 
@@ -46,12 +46,12 @@ def sign_up():
         return jsonify({'success': False, 'message':"Email must be at least 10 characters long."}), 400
     elif len(first_name) < 3:
         return jsonify({'success': False, 'message':"Name must be at least 3 characters long."}), 400
-    elif len(password1) < 7:
+    elif len(password) < 7:
         return jsonify({'success': False, 'message':"Password must be at least 7 characters long."}), 400
-    elif password1 != password2:
+    elif password != password2:
         return jsonify({'success': False, 'message':"Passwords don't match."}), 400
     else:
-        new_user = User(email=email, first_name=first_name, password=generate_password_hash(password1, method='pbkdf2:sha256'))
+        new_user = User(email=email, first_name=first_name, password=generate_password_hash(password, method='pbkdf2:sha256'))
         db.session.add(new_user)
         db.session.commit()
 
