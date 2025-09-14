@@ -6,11 +6,15 @@ const ContactList = ({contacts, updateContact, updateCallback}) => {
         try {
             const options = {
                 method: "DELETE",
+                credentials: 'include', // Agregar credenciales para autenticación
             }
-            const response = await fetch(`http://127.0.0.1:5000/api/contacts/delete_contact/${id}`, options);
-            if (response.status === 200) updateCallback();
-            else console.error("Failed to delete.");
-        } catch (e) {
+            const response = await fetch(`http://127.0.0.1:5000/delete_contact/${id}`, options);
+            if (response.status === 200) {
+                updateCallback();
+            } else {
+                console.error("Failed to delete.");
+            }
+        } catch (error) { // Corrección: era 'e' antes
             alert(error);
         };
     };

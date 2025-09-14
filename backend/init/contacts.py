@@ -3,22 +3,26 @@ from . import db
 from .models import Contact
 from flask_login import login_required, current_user
 
-# CRUD (Create Rread Update Delete) <- what we are building, so we need an operation for each
-
 contacts = Blueprint('contacts', __name__)
 
 #read
-@contacts.route('/contacts', methods=['GET'])
+@contacts.route('/contacts', methods=['GET', 'OPTIONS'])
 @login_required
 def get_contact():
+    if request.method == "OPTIONS":
+        return jsonify({'success': True}), 200
+    
     contacts = Contact.query.filter_by(user_id=current_user.id).all()
     contacts_dic = [c.to_json() for c in contacts]
     return jsonify({'contacts': contacts_dic})
 
 #create
-@contacts.route('/create_contact', methods=['POST'])
+@contacts.route('/create_contact', methods=['POST', 'OPTIONS'])
 @login_required
 def create_contact():
+    if request.method == "OPTIONS":
+        return jsonify({'success': True}), 200
+    
     first_name = request.json.get('firstName')
     last_name = request.json.get('lastName')
     email = request.json.get('email')
@@ -41,11 +45,13 @@ def create_contact():
     
     return jsonify({'message': "Contact created."}), 200
 
-
 #update
-@contacts.route('/update_contact/<int:contact_id>', methods=['PATCH'])
+@contacts.route('/update_contact/<int:contact_id>', methods=['PATCH', 'OPTIONS'])
 @login_required
 def update_contact(contact_id):
+    if request.method == "OPTIONS":
+        return jsonify({'success': True}), 200
+    
     contact = Contact.query.filter_by(id=contact_id, user_id=current_user.id).first()
 
     if not contact:
@@ -60,11 +66,13 @@ def update_contact(contact_id):
 
     return jsonify({'message': "Contact updated."}), 201
 
-
 #delete
-@contacts.route('/delete_contact/<int:contact_id>', methods=['DELETE'])
+@contacts.route('/delete_contact/<int:contact_id>', methods=['DELETE', 'OPTIONS'])
 @login_required
 def delete_contact(contact_id):
+    if request.method == "OPTIONS":
+        return jsonify({'success': True}), 200
+    
     contact = Contact.query.filter_by(id=contact_id, user_id=current_user.id).first()
 
     if not contact:
